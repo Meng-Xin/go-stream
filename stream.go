@@ -8,5 +8,5 @@ type Stream[T any] interface {
 	// Sorted 中间方法，实现对元素排序
 	Sorted(compare func(T, T) bool) Stream[T]
 	// Collect 结束方法，收集数据，调用端获取需要断言类型。
-	Collect() interface{}
+	Collect(accept interface{})
 }
