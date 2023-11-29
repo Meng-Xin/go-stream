@@ -1,3 +1,3 @@
-module github.com/meng-xin/go-stream
+module github.com/Meng-Xin/go-stream
 
 go 1.21
