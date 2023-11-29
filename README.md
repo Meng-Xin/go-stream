@@ -2,6 +2,8 @@
 > "Go-stream 是一个受 Java Collections 框架中 Stream 接口操作启发的学习项目，支持泛型
 > (Go-stream is a learning project inspired by the Stream interface operations in the Java Collections framework, with support for generics!)"
 
+## Prerequisites
+> GoVersion >= 1.21.0
 ## QuickStart
 
 **SlicesDemo**
