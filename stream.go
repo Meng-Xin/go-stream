@@ -8,6 +8,8 @@ type SliceStream[T any] interface {
 	Map(mapper func(T) T) SliceStream[T]
 	// Sorted 中间方法，实现对元素排序
 	Sorted(compare func(T, T) bool) SliceStream[T]
+	// ForEach 中间方法，实现对元素遍历
+	ForEach(consumer func(T)) SliceStream[T]
 	// Collect 结束方法，收集数据
 	Collect() []T
 }
