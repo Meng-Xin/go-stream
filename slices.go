@@ -1,7 +1,6 @@
 package go_stream
 
 import (
-	"fmt"
 	"sort"
 )
 
@@ -10,11 +9,12 @@ type slicesStream[T any] struct {
 	data []T
 }
 
-func OfSlices[T any](data []T) Stream[T] {
+func OfSlices[T any](data []T) SliceStream[T] {
 	return &slicesStream[T]{data: data}
 }
 
-func (s *slicesStream[T]) Sorted(compare func(T, T) bool) Stream[T] {
+// Sorted 排序器：通过回调函数指定排序顺序。
+func (s *slicesStream[T]) Sorted(compare func(T, T) bool) SliceStream[T] {
 	sort.Slice(s.data, func(i, j int) bool {
 		return compare(s.data[i], s.data[j])
 	})
@@ -22,8 +22,8 @@ func (s *slicesStream[T]) Sorted(compare func(T, T) bool) Stream[T] {
 }
 
 // Filter 过滤器：使用回调函数获取自定义的函数返回值。
-func (s *slicesStream[T]) Filter(predicate func(T) bool) Stream[T] {
-	var result []T
+func (s *slicesStream[T]) Filter(predicate func(T) bool) SliceStream[T] {
+	result := make([]T, 0)
 	for _, val := range s.data {
 		if predicate(val) {
 			result = append(result, val)
@@ -34,7 +34,7 @@ func (s *slicesStream[T]) Filter(predicate func(T) bool) Stream[T] {
 }
 
 // Map 对于集合中的每个元素进行映射操作的方法
-func (s *slicesStream[T]) Map(mapper func(T) T) Stream[T] {
+func (s *slicesStream[T]) Map(mapper func(T) T) SliceStream[T] {
 	var result []T
 	for _, val := range s.data {
 		result = append(result, mapper(val))
@@ -44,10 +44,6 @@ func (s *slicesStream[T]) Map(mapper func(T) T) Stream[T] {
 }
 
 // Collect 返回该集合的一个具体类型
-func (s *slicesStream[T]) Collect(accept interface{}) {
-	if result, ok := (accept).(*[]T); ok {
-		*result = s.data
-	} else {
-		fmt.Println("Collect 接收参数需要一个指向[]T的地址！")
-	}
+func (s *slicesStream[T]) Collect() []T {
+	return s.data
 }
