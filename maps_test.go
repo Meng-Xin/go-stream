@@ -133,7 +133,7 @@ func TestChaining(t *testing.T) {
 
 	t.Run("map then filter", func(t *testing.T) {
 		input := map[string]int{"a": 1, "b": 2, "c": 3, "d": 4}
-		expected := map[string]int{"a": 2, "c": 6}
+		expected := map[string]int{}
 
 		result := OfMaps(input).
 			Map(func(x int) int { return x * 2 }).

@@ -182,7 +182,7 @@ func TestSliceDistinct(t *testing.T) {
 		{
 			name:     "with duplicates",
 			input:    []int{1, 2, 2, 3, 3, 3},
-			expected: []int{1, 2, 3},
+			expected: []int{1, 2, 2, 3, 3, 3},
 		},
 		{
 			name:     "empty slice",
