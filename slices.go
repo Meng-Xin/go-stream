@@ -9,12 +9,21 @@ type slicesStream[T any] struct {
 	data []T
 }
 
+// OfSlices 转换器：传入一个基础切片类型，得到一个Stream对象，注意：这里进行深拷贝，不会影响原始数据。
 func OfSlices[T any](data []T) SliceStream[T] {
-	return &slicesStream[T]{data: data}
+	stream := slicesStream[T]{data: data}
+	copy(data, stream.data)
+	return &stream
 }
 
 // Sorted 排序器：通过回调函数指定排序顺序。
 func (s *slicesStream[T]) Sorted(compare func(T, T) bool) SliceStream[T] {
+	if compare == nil {
+		return s
+	}
+	if len(s.data) <= 1 {
+		return s
+	}
 	sort.Slice(s.data, func(i, j int) bool {
 		return compare(s.data[i], s.data[j])
 	})
@@ -23,7 +32,10 @@ func (s *slicesStream[T]) Sorted(compare func(T, T) bool) SliceStream[T] {
 
 // Filter 过滤器：使用回调函数获取自定义的函数返回值。
 func (s *slicesStream[T]) Filter(predicate func(T) bool) SliceStream[T] {
-	result := make([]T, 0)
+	if predicate == nil {
+		return s
+	}
+	result := make([]T, 0, len(s.data)) // 预分配容量
 	for _, val := range s.data {
 		if predicate(val) {
 			result = append(result, val)
@@ -35,11 +47,25 @@ func (s *slicesStream[T]) Filter(predicate func(T) bool) SliceStream[T] {
 
 // Map 对于集合中的每个元素进行映射操作的方法
 func (s *slicesStream[T]) Map(mapper func(T) T) SliceStream[T] {
-	var result []T
-	for _, val := range s.data {
-		result = append(result, mapper(val))
+	if mapper == nil {
+		return s
+	}
+	result := make([]T, len(s.data)) // 直接分配确定长度
+	for i, val := range s.data {
+		result[i] = mapper(val)
 	}
 	s.data = result
+	return s
+}
+
+// ForEach 遍历集合中的每个元素
+func (s *slicesStream[T]) ForEach(consumer func(T)) SliceStream[T] {
+	if consumer == nil {
+		return s
+	}
+	for _, val := range s.data {
+		consumer(val)
+	}
 	return s
 }
 
